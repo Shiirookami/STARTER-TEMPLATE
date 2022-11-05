@@ -7,11 +7,18 @@
 @stop
 
 @section('content')
-    <div class="row">
+    <div class="container">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <p class="mb-0">You are logged in!</p>
+                    <div class="card-header">{{__('Dashboard')}}</div>
+                    @if ($user->roles_id == 1)
+                        Role is admin
+
+                    @else
+                        Role is User
+
+                    @endif
                 </div>
             </div>
         </div>
