@@ -18,15 +18,15 @@ class CreateUsersSeeder extends Seeder
             [
                 'name'=>'isUser',
                 'username'=>'isUser',
-                'email'=>'zaq@zaq',
-                'name'=>bcrypt('12345'),
+                'email'=>'zaq@gmail.com',
+                'password'=>bcrypt('12345'),
                 'roles_id'=>2
             ],
             [
                 'name'=>'isAdmin',
                 'username'=>'isAdmin',
-                'email'=>'zaq@zaqi',
-                'name'=>bcrypt('12345'),
+                'email'=>'admin@gmail.com',
+                'password'=>bcrypt('12345'),
                 'roles_id'=>1
             ],
 
