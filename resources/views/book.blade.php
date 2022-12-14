@@ -41,10 +41,14 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic example">
+                                    <form action="books/delete/{{$book->id}}" method="post">
+                                    @csrf
+                                    @method('delete')
                                     <button type="button" id="btn-edit-buku" class="btn btn-success"
-                                        data-toggle="modal" data-target="#editBukuModal" data-id="{{ $book->id }}">Edit
-                                    </button>
-                                    <button type="submit" id="btn-delete-buku" class="btn btn-danger">Hapus</button>
+                                    data-toggle="modal" data-target="#editBukuModal" data-id="{{ $book->id }}">Edit</button>
+
+                                    <button type="submit" id="btn-delete-buku" class="btn btn-danger" data-id="{{$book->id}}" value="{{$book->id}}">Hapus</button>
+                                </form>
                                 </div>
                             </td>
                         </tr>
@@ -175,6 +179,41 @@
                         }
                     },
                 });
+            });
+        });
+</script>
+<script>
+    $(function () {
+        $(document).on('click', '#btn-delete-buku', function () {
+            var id = $(this).val();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            Swal.fire({
+                    title: 'Apa kamu yakin?',
+                    text: "Kamu tidak akan dapat mengembalikan ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "books/delete/" + id,
+                            type: "DELETE",
+                            success: function (response) {
+                                Swal.fire('Terhapus!', response.msg, 'success');
+                                console.log(response);
+                                $("#table-row" + id).remove();
+                            }
+                        });
+                    }
+                })
             });
         });
 </script>
