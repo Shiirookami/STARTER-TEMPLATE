@@ -106,6 +106,72 @@
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
+    <script>
+        const Toast = Swal.mixin({
+            toast:true,
+            position: 'top-end',
+            showConfirmButton:false,
+            timer: 3000,
+        })
+        @if(Session::has('message'))
+            var type = "{{Session::get('alert-type')}}";
+            switch(type){
+                case 'info':
+                    Toast.fire({
+                            type:'info',
+                            title: "{{Session::get('message')}}"
+                })
+                break;
+                case 'succes':
+                    Toast.fire({
+                            type:'Success',
+                            title: "{{Session::get('message')}}"
+                })
+                break;
+                case 'warning':
+                    Toast.fire({
+                            type:'warning',
+                            title: "{{Session::get('message')}}"
+                })
+                break;
+                case 'error':
+                    Toast.fire({
+                            type:'error',
+                            title: "{{Session::get('message')}}"
+                })
+                break;
+                case 'dialog_error':
+                    Swal.fire({
+                            type:'error',
+                            title:"Oopss",
+                            text: "{{Session::get('message')}}", timer: 3000
+                })
+                break;
+            }
+            @endif
+            @if($errors->any())
+                @foreach($errors->all() as $error)
+                    Swal.fire({
+                        type: 'error',
+                        title:"Oopss",
+                        text: "{{ $error }}"
+                    })
+                    @endforeach
+                @endif
+                </script>
+
+    <script>
+        @if($errors->any())
+            Swal.fire({
+                        type: 'error',
+                        title:"Oopss",
+                        text: "Terjadi suatu kesalahan"
+                    })
+        @endif
+        $('#table-data').DataTable();
+        let baseurl = "<?=url('/')?>";
+        let fullURL = "<?=url()->full()?>";
+    </script>
 
 </body>
 

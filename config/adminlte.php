@@ -295,22 +295,36 @@ return [
             'type'         => 'navbar-search',
             'text'         => 'search',
             'topnav_right' => true,
+            'can'  => 'isAdmin',
+        ],
+        [
+            'text'         => 'Buku',
+            'url'         => 'admin/books',
+            'icon' => 'fas fa-fw fa-book',
+            'can'  => 'isAdmin',
         ],
         [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
-        ],
-
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'can'  => 'isAdmin',
         ],
         [
-            'text' => 'Buku',
-            'url'  => 'admin/books',
-            'icon' => 'fas fa-fw fa-book',
-            'can' => 'isAdmin',
+            'text' => 'blog',
+            'url'  => 'admin/blog',
+            'can'  => 'manage-blog',
+        ],
+        ['header' => 'account_settings'],
+        [
+            'text' => 'profile',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-user',
+            'can'  => 'isAdmin',
+        ],
+        [
+            'text' => 'change_password',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-lock',
+            'can'  => 'isAdmin',
         ],
     ],
 
