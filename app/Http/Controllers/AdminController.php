@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use App\Models\Book;
+use PDF;
 
 class AdminController extends Controller
 {
@@ -90,5 +91,11 @@ class AdminController extends Controller
         Storage::delete('public/cover_buku/'.$book->cover);
         $book->delete();
         return redirect()->back();
+    }
+    public function print_books()
+    {
+        $books = Book::all();
+        $pdf = PDF::loadview('print_books',['books' => $books]);
+        return $pdf->download('data_buku.pdf');
     }
 }
