@@ -15,6 +15,10 @@
             <i class="fa fa-print"></i>
                 Cetak PDF</a>
             <hr/>
+            <div class="btn-group" role="group"aria-label="Basic example">
+                <a href="{{ route('admin.book.export') }}"class="btn btn-info" target="_blank">Export</a>
+                <a href=""class="btn btn-warning">Import</a>
+            </div>
             <table id="table-data" class="table table-borderer">
                 <thead>
                     <tr class="text-center">
