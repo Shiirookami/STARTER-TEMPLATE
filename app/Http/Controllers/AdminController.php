@@ -62,8 +62,7 @@ class AdminController extends Controller
             'judul' => 'required|max:255',
             'penulis' => 'required',
             'tahun' => 'required',
-            'penerbit' => 'required',
-            'cover' => 'required|mimes:jpeg,png,jpg,gif,svg'
+            'penerbit' => 'required'
         ]);
 
         $book->judul = $request->get('judul');
@@ -114,5 +113,36 @@ class AdminController extends Controller
         ];
 
         return redirect()->route('admin.books')->with($notification);
+    }
+
+    public function trash(){
+        $user = Auth::user();
+
+    	$books = Book::onlyTrashed()->get();
+    	return view('book_trash',compact ('books', 'user'));
+    }
+    public function restore($id){
+    	$books = Book::onlyTrashed()->find($id);
+        Storage::delete('public/cover_buku/'.$books->cover);
+    	$books->restore();
+    	return redirect()->route('admin.books');
+    }
+    public function restore_all(){
+        $books = Book::onlyTrashed();
+        $books->restore();
+
+        return redirect()->route('admin.books');
+    }
+    public function delete($id){
+        $books = Book::onlyTrashed()->find($id);
+        Storage::delete('public/cover_buku/'.$books->cover);
+    	$books->forceDelete();
+    	return redirect()->back();
+    }
+    public function delete_all(){
+        $books = Book::onlyTrashed();
+        $books->forceDelete();
+
+        return redirect()->route('admin.books');
     }
 }
