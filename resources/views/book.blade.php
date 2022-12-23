@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 @section('title', 'Home Page')
 @section('content_header')
-    <h1>Data Buku</h1>
+    <h1>{{ __('Data Buku')}}</h1>
 @stop
 @section('content')
 <div class="container-fluid" id="page">
@@ -15,10 +15,10 @@
                 Cetak PDF</a>
             <div class="btn-group" role="group"aria-label="Basic example">
                 <a href="{{ route('admin.book.export') }}"class="btn btn-info" target="_blank"><i class="fa fa-print"></i> Export</a>
-                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#importDataModal"><i class="fa fa-print"></i> Import</button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importDataModal"><i class="fa fa-print"></i> Import</button>
             </div>
             <a href="{{ route('admin.books.trash') }}"class="btn btn-warning" target="_blank"><i class="fa fa-trash"></i> Recycle</a>
-            <table id="table-data" class="table table-borderer">
+            <table id="table-data" class="table table-bordered">
                 <thead>
                     <tr class="text-center">
                         <th>NO</th>
@@ -41,22 +41,20 @@
                             <td>{{$book->penerbit}}</td>
                             <td>
                                 @if ($book->cover !== null)
-                                    <img src="{{asset('storage/cover_buku/'.$book->cover)}}" width="100px"/>
+                                    <img src="{{asset('storage/cover_buku/'.$book->cover)}}" width="80px"/>
                                 @else
                                 [Gambar tidak tersedia]
                                 @endif
                             </td>
                             <td>
+                                <form action="books/delete/{{$book->id}}" method="post">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <form action="books/delete/{{$book->id}}" method="post">
+                                    <button type="button" id="btn-edit-buku" class="btn btn-success"data-toggle="modal" data-target="#editBukuModal" data-id="{{ $book->id }}">Edit</button>
                                     @csrf
                                     @method('delete')
-                                    <button type="button" id="btn-edit-buku" class="btn btn-success"
-                                    data-toggle="modal" data-target="#editBukuModal" data-id="{{ $book->id }}">Edit</button>
-
                                     <button type="submit" id="btn-delete-buku" class="btn btn-danger" data-id="{{$book->id}}" value="{{$book->id}}">Hapus</button>
-                                </form>
                                 </div>
+                            </form>
                             </td>
                         </tr>
                         @endforeach
@@ -65,7 +63,7 @@
         </div>
     </div>
 </div>
-@stop
+
 <div class="modal fade" id="tambahBukuModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -183,69 +181,70 @@
         </div>
     </div>
 </div>
+@stop
 
 @section('js')
-<script>
-    $(function(){
-        $(document).on('click','#btn-edit-buku', function(){
-            let id = $(this).data('id');
-            $('#image-area').empty();
-            $.ajax({
-                type: "get",
-                url: "{{url('/admin/ajaxadmin/dataBuku')}}/"+id,
-                dataType: 'json',
-                success: function(res){
-                    $('#edit-judul').val(res.judul);
-                    $('#edit-penerbit').val(res.penerbit);
-                    $('#edit-penulis').val(res.penulis);
-                    $('#edit-tahun').val(res.tahun);
-                    $('#edit-id').val(res.id);
-                    $('#edit-old-cover').val(res.cover);
-
-                    if (res.cover !== null) {
-                        $('#image-area').append(
-                            "<img src='"+baseurl+"/storage/cover_buku/"+res.cover+"' width='200px'/>");
+    <script>
+        $(function(){
+            $(document).on('click', '#btn-edit-buku', function(){
+                let id = $(this).data('id');
+                $('#image-area').empty();
+                $.ajax({
+                    type: 'get',
+                    url: "{{url('/admin/ajaxadmin/dataBuku')}}/"+id,
+                    dataType: 'json',
+                    success: function(res) {
+                        $('#edit-judul').val(res.judul);
+                        $('#edit-penerbit').val(res.penerbit);
+                        $('#edit-penulis').val(res.penulis);
+                        $('#edit-tahun').val(res.tahun);
+                        $('#edit-id').val(res.id);
+                        $('#edit-old-cover').val(res.cover);
+                        if(res.cover !== null){
+                            $('#image-area').append(
+                                "<img src='"+baseurl+"/storage/cover_buku/"+res.cover+"' width='200px'/>"
+                            )
                         } else {
-                            $('#image-area').append('[Gambar tidak tersedia]');
+                            $('#image-area').append('[Gambar Tidak Tersedia]')
                         }
-                    },
-                });
-            });
-        });
-</script>
-<script>
-    $(function () {
-        $(document).on('click', '#btn-delete-buku', function () {
-            var id = $(this).val();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            Swal.fire({
-                    title: 'Apa kamu yakin?',
-                    text: "Kamu tidak akan dapat mengembalikan ini!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                })
-                .then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "books/delete/" + id,
-                            type: "DELETE",
-                            success: function (response) {
-                                Swal.fire('Terhapus!', response.msg, 'success');
-                                console.log(response);
-                                $("#table-row" + id).remove();
-                            }
-                        });
                     }
                 })
-            });
+            })
         });
-</script>
+        function deleteConfirmation(npm, judul){
+            Swal.fire({
+                title: 'Hapus?',
+                icon: 'warning',
+                text: 'Apakah anda yakin akan menghapus buku dengan judul ' + judul + '?!',
+                showCancelButton: 10,
+                coonfirmButtonText: 'Ya, lakukan!',
+                cancelButtonText: 'Tidak, batalkan',
+                reverseButtons: !0
+            }).then(function(e){
+                if(e.value === true){
+                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    $.ajax({
+                        type: 'POST',
+                        url: 'books/delete/'+npm,
+                        data: {_token:CSRF_TOKEN},
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success === true){
+                                Swal.fire('Done!', result.message, 'success');
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 1000);
+                            } else {
+                                Swal.fire('Error!', result.message, 'error')
+                            }
+                        }
+                    })
+                }else{
+                    e.dismiss;
+                }
+            }, function(dismiss) {
+                return false;
+            })
+        }
+    </script>
 @endsection

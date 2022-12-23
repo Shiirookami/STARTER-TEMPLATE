@@ -47,7 +47,7 @@ class AdminController extends Controller
 
         $book->save();
 
-        $notification = array('message' => 'Data buku berhasil ditambahkan','alert-type'=>'succes');
+        $notification = array('message' => 'Data buku berhasil ditambahkan','alert-type'=>'success');
 
         return redirect()->route('admin.books')->with($notification);
     }
@@ -83,7 +83,7 @@ class AdminController extends Controller
                 $book->save();
                 $notification = array(
                     'message' => 'Data buku berhasil diubah',
-                    'alert-type' => 'success'
+                    'alert-type' => 'info'
                 );
 
                 return redirect()->route('admin.books')->with($notification);
@@ -130,8 +130,11 @@ class AdminController extends Controller
     public function restore_all(){
         $books = Book::onlyTrashed();
         $books->restore();
-
-        return redirect()->route('admin.books');
+        $notification = array(
+            'message' => 'Data buku berhasil Dikembalikan',
+            'alert-type' => 'info'
+        );
+        return redirect()->route('admin.books')->with($notification);
     }
     public function delete($id){
         $books = Book::onlyTrashed()->find($id);
@@ -142,7 +145,10 @@ class AdminController extends Controller
     public function delete_all(){
         $books = Book::onlyTrashed();
         $books->forceDelete();
-
-        return redirect()->route('admin.books');
+        $notification = array(
+            'message' => 'Semua berhasil dihapus',
+            'alert-type' => 'danger'
+        );
+        return redirect()->route('admin.books')->with($notification);
     }
 }

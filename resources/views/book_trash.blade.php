@@ -12,7 +12,7 @@
             <i class="fa fa-trash"></i>
                 Recycle</a>
             <div class="btn-group" role="group"aria-label="Basic example">
-                <a href="{{ route('admin.books.restore_all') }}"class="btn btn-success" target="_blank">Restore all</a>
+                <a href="{{ route('admin.books.restore_all') }}"class="btn btn-success" target="_blank"><i class="fa fa-save"></i> Restore all</a>
                 <a href="{{ route('admin.books.delete_all') }}"class="btn btn-danger" target="_blank"><i class="fa fa-trash"></i> delete all</a>
             </div>
             <table id="table-data" class="table table-borderer">
@@ -36,10 +36,9 @@
                             <td>{{$book->penulis}}</td>
                             <td>{{$book->tahun}}</td>
                             <td>{{$book->penerbit}}</td>
-                            <td>{{$book->cover}}</td>
                             <td>
                                 @if ($book->cover !== null)
-                                    <img src="{{asset('storage/cover_buku/'.$book->cover)}}" width="80px"/>
+                                    <img src="{{asset('public/storage/cover_buku/'.$book->cover)}}" width="80px"/>
                                 @else
                                 [Gambar tidak tersedia]
                                 @endif
